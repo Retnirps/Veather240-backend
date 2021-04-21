@@ -1,6 +1,8 @@
+const dotenv = require('dotenv')
+dotenv.config({path: __dirname + '/.env'});
 const express = require('express');
 const mongoose = require('mongoose');
-const {router} = require('./js/router')
+const router = require('./js/router');
 
 const PORT = process.env.PORT || 3000;
 
@@ -14,20 +16,14 @@ app.use((req, res, next) => {
 
 app.use(router);
 
-async function start() {
-    try {
-        await mongoose.connect('mongodb+srv://majesta:<password>@majestacluster.3qwmw.mongodb.net/WeatherDatabase', {
-            useNewUrlParser: true,
-            useFindAndModify: false,
-            useUnifiedTopology: true
-        });
-        app.listen(PORT, () => {
-            console.log(`Listening on port: ${PORT}`);
-        });
-    } catch (e) {
-        console.log(e);
-    }
-}
+const connect = async() => await mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true
+});
 
-start().then();
+connect().catch(e => console.error(e));
 
+app.listen(PORT, () => {
+    console.log(`Listening on port: ${PORT}`);
+});
