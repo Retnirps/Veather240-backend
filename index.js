@@ -2,7 +2,8 @@ const dotenv = require('dotenv')
 dotenv.config({path: __dirname + '/.env'});
 const express = require('express');
 const mongoose = require('mongoose');
-const router = require('./js/router');
+const weather = require('./js/router/weather/weather');
+const database = require('./js/router/database/database');
 
 const PORT = process.env.PORT || 3000;
 
@@ -14,7 +15,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(router);
+app.use(weather);
+app.use(database);
 
 const connect = async() => await mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
